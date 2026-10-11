@@ -1,0 +1,11 @@
+packages:
+  - "."
+
+allowBuilds: {}
+
+# Supported pnpm override home (pnpm v10+ no longer reads the "pnpm" field
+# in package.json). Pins baseline-browser-mapping to the mature 2.11.27
+# (published 2026-10-01); 2.11.28 (published 2026-10-08) violates the
+# enforced minimumReleaseAge policy.
+overrides:
+  baseline-browser-mapping: 2.11.27

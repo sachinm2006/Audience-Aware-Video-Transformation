@@ -1,0 +1,30 @@
+# Ignore secrets and generated media. Fixtures/demo_source.mp4 is intentionally
+# NOT ignored: it is committed so the pipeline can be exercised on a clean
+# checkout without running ffmpeg.
+.env
+.env.*
+!.env.example
+
+storage/
+!storage/.gitkeep
+
+# Scratch debris from local runs and coding agents.
+scratch_*
+baseline.txt
+run*.txt
+*.log
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+node_modules/
+.DS_Store
+
+.next/
+out/
+*.tsbuildinfo
+
+# Automated browser verification artefacts
+.openchamber/

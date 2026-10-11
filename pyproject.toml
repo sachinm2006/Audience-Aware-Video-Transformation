@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hackerring-context-guard"
+version = "0.1.0"
+description = "Source-grounded verification of proposed audience-specific video cuts"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.8,<3", "httpx>=0.27,<1", "cryptography>=41"]
+
+# The local and server extras are optional and user-approved. Base installs stay
+# lightweight validation, http, and encryption only (pydantic, httpx,
+# cryptography), so the library and its rules run without a model runtime. The pinned stack installs in the maintainer environment; that is not
+# integrated inference verification. Adjust only after repeating install checks.
+[project.optional-dependencies]
+# Local natural-language-inference review: the sequence-classification model
+# stack the engine loads. No provider key is required.
+local = [
+    "torch==2.14.1",
+    "transformers==5.19.0",
+    "sentencepiece==0.2.2",
+    "safetensors==0.8.0",
+]
+# Standalone server: the local stack plus the ASGI app and worker. Uvicorn is
+# installed plain, without its standard bundle.
+server = [
+    "hackerring-context-guard[local]",
+    "fastapi==0.143.0",
+    "uvicorn==0.54.0",
+]
+test = ["pytest>=8,<10", "fastapi>=0.115,<1"]
+
+[tool.setuptools.packages.find]
+# Every backend subpackage is discovered from this pattern, so a new module
+# such as backend/locales, backend/ai/nli_runtime, or backend/server ships
+# without listing it here. Tests and fixtures are outside backend* and stay out
+# of the distribution.
+include = ["backend*"]
+
+[tool.pytest.ini_options]
+# The root pytest.ini takes precedence in this checkout and runs the full suite.
+# These narrower defaults are for package-focused runs without that file.
+testpaths = ["tests/context_guard"]
+addopts = "-p no:cacheprovider"
+# The opt-in NLI module checks CONTEXTGUARD_RUN_MODEL_TESTS before importing
+# torch or creating its engine. Default package-focused tests make no provider
+# requests and do not load model weights.
